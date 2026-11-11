@@ -1,0 +1,39 @@
+openapi: 3.0.3
+info:
+  title: 客户中心模拟契约
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+paths:
+  /customers/by-id-number:
+    get:
+      summary: 按身份证号读取客户金融主数据
+      parameters:
+        - in: query
+          name: idNumber
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: 客户主数据
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [idNumber, name, accountStatus, memberLevel, availableBalance, holdings]
+                properties:
+                  idNumber: { type: string }
+                  name: { type: string }
+                  accountStatus: { type: string, enum: [ACTIVE, FROZEN, CLOSED] }
+                  memberLevel: { type: string, enum: [NORMAL, VIP] }
+                  availableBalance: { type: number }
+                  holdings:
+                    type: array
+                    items:
+                      type: object
+                      required: [productName, value]
+                      properties:
+                        productName: { type: string }
+                        value: { type: number }
+        '404': { description: 客户不存在 }
+        '500': { description: 客户中心错误 }

@@ -1,0 +1,9 @@
+{
+  "name": "green-crm-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {"dev": "vite --host 127.0.0.1", "build": "vite build"},
+  "dependencies": {"@ant-design/icons-vue": "7.0.1", "ant-design-vue": "4.2.6", "vue": "3.5.13"},
+  "devDependencies": {"@vitejs/plugin-vue": "5.2.1", "vite": "5.4.14"}
+}

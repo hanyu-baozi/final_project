@@ -1,0 +1,45 @@
+name: CRM checks
+on:
+  push:
+  pull_request:
+jobs:
+  backend:
+    name: Backend / tests and quality gates
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: crm-backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: crm-backend/pom.xml
+      - name: Run tests, architecture rules, Checkstyle and coverage gate
+        run: mvn --batch-mode --no-transfer-progress verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-test-and-coverage-reports
+          path: |
+            crm-backend/target/surefire-reports/
+            crm-backend/target/site/jacoco/
+          if-no-files-found: warn
+  frontend:
+    name: Frontend / build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: crm-frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
